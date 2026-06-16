@@ -3,6 +3,12 @@
 <div class="aiz-titlebar mt-2 mb-3"><h1 class="h3">Platform Connection</h1></div>
 
 @if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
+@if(session('error'))<div class="alert alert-danger">{{ session('error') }}</div>@endif
+@if($errors->any())
+    <div class="alert alert-danger"><ul class="mb-0">
+        @foreach($errors->all() as $err)<li>{{ $err }}</li>@endforeach
+    </ul></div>
+@endif
 
 <div class="card"><div class="card-body">
     <p><strong>Status:</strong> {{ $status }}

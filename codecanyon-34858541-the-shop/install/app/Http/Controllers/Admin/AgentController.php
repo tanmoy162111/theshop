@@ -29,7 +29,14 @@ class AgentController extends Controller
         ]);
 
         $config->set('central_url', rtrim($data['central_url'], '/'));
-        $client->register($data['business_name'], $data['contact_email'], $data['domain']);
+
+        try {
+            $client->register($data['business_name'], $data['contact_email'], $data['domain']);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Agent registration failed: ' . $e->getMessage());
+            return redirect()->back()->with('error',
+                'Could not reach the control plane. Please verify the Central URL and try again.');
+        }
 
         return redirect()->back()->with('success', 'Registered with control plane. Awaiting approval.');
     }
