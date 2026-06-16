@@ -1,6 +1,7 @@
 <?php
 
 use App\Addons\MultiVendor\Http\Controllers\MultiVendorController;
+use App\Http\Controllers\Admin\AgentController;
 use App\Http\Controllers\AddonController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AizUploadController;
@@ -94,6 +95,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'agent.enfo
     Route::get('/', [AdminController::class, 'admin_dashboard'])->name('admin.dashboard');
 
     Route::post('/language', [LanguageController::class, 'changeLanguage'])->name('language.change');
+
+    Route::get('agent', [AgentController::class, 'settings'])->name('agent.settings');
+    Route::post('agent/register', [AgentController::class, 'register'])->name('agent.register');
+    Route::post('agent/sync', [AgentController::class, 'sync'])->name('agent.sync');
 
     Route::resource('categories', CategoryController::class);
     Route::get('/categories/edit/{id}', [CategoryController::class, 'edit'])->name('categories.edit');
