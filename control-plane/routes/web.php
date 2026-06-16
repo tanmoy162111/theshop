@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClientAdminController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/clients', [ClientAdminController::class, 'index'])->name('clients.index');
+    Route::get('/clients/{client}', [ClientAdminController::class, 'show'])->name('clients.show');
+    Route::patch('/clients/{client}', [ClientAdminController::class, 'update'])->name('clients.update');
 });
 
 require __DIR__.'/auth.php';
