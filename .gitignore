@@ -1,0 +1,16 @@
+# dependencies
+**/vendor/
+**/node_modules/
+# env & local
+**/.env
+**/.env.backup
+# build & cache
+**/public/build/
+**/storage/*.key
+codecanyon-34858541-the-shop/install/storage/framework/cache/data/*
+codecanyon-34858541-the-shop/install/storage/logs/*
+control-plane/storage/logs/*
+# uploads (demo/runtime assets)
+codecanyon-34858541-the-shop/install/public/uploads/all/
+# os
+.DS_Store
