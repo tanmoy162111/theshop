@@ -96,10 +96,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'agent.enfo
 
     Route::post('/language', [LanguageController::class, 'changeLanguage'])->name('language.change');
 
-    Route::get('agent', [AgentController::class, 'settings'])->name('agent.settings');
-    Route::post('agent/register', [AgentController::class, 'register'])->name('agent.register');
-    Route::post('agent/sync', [AgentController::class, 'sync'])->name('agent.sync');
-
     Route::resource('categories', CategoryController::class);
     Route::get('/categories/edit/{id}', [CategoryController::class, 'edit'])->name('categories.edit');
     Route::get('/categories/destroy/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
@@ -351,6 +347,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'agent.enfo
 
     // notification
     Route::get('all-notifications', [NotificationController::class, 'all_notifications'])->name('notification.list');
+});
+
+// Agent routes - admin only but NOT subject to agent.enforce
+// This allows the Platform Connection settings page to remain accessible when the admin is locked
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function () {
+    Route::get('agent', [AgentController::class, 'settings'])->name('agent.settings');
+    Route::post('agent/register', [AgentController::class, 'register'])->name('agent.register');
+    Route::post('agent/sync', [AgentController::class, 'sync'])->name('agent.sync');
 });
 
 //Authorize-Net-Payment
