@@ -13,33 +13,41 @@ class AgentEnforcement
     /** @param string $scope 'admin' | 'storefront' */
     public function handle(Request $request, Closure $next, string $scope = 'storefront')
     {
-        $status = $this->currentStatus();
+        [$status, $message] = $this->currentState();
 
         // Warning: never blocks; surfaces a banner to views.
         if ($status === 'warning') {
-            View::share('agent_banner', $this->config->get('status_message'));
+            View::share('agent_banner', $message);
         }
 
-        $blockAdmin = in_array($status, ['locked_admin', 'maintenance'], true);
-        $blockStore = $status === 'maintenance';
+        // maintenance blocks both admin and storefront; locked_admin blocks only admin.
+        $adminBlocked = in_array($status, ['locked_admin', 'maintenance'], true);
+        $storeDown = $status === 'maintenance';
 
-        if ($scope === 'admin' && $blockAdmin) {
-            return $this->blocked($this->config->get('status_message') ?? 'Admin temporarily locked.');
+        if ($scope === 'admin' && $adminBlocked) {
+            return $this->blocked($message ?? 'Admin temporarily locked.');
         }
-        if ($scope === 'storefront' && $blockStore) {
-            return $this->blocked($this->config->get('status_message') ?? 'Store temporarily unavailable.');
+        if ($scope === 'storefront' && $storeDown) {
+            return $this->blocked($message ?? 'Store temporarily unavailable.');
         }
 
         return $next($request);
     }
 
-    /** Fail-open: any error (incl. missing agent_settings table) → 'active' (allow). */
-    private function currentStatus(): string
+    /**
+     * Fail-open: any error (incl. missing agent_settings table or a transient
+     * DB failure on either read) yields ['active', null] so the store stays up.
+     *
+     * @return array{0: string, 1: ?string}
+     */
+    private function currentState(): array
     {
         try {
-            return $this->config->get('status', 'active') ?: 'active';
-        } catch (\Throwable $e) {
-            return 'active';
+            $status = $this->config->get('status', 'active') ?: 'active';
+            $message = $this->config->get('status_message');
+            return [$status, $message];
+        } catch (\Throwable) {
+            return ['active', null];
         }
     }
 
