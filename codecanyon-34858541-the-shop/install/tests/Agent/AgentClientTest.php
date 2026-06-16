@@ -55,4 +55,19 @@ class AgentClientTest extends AgentTestCase
 
         $this->assertSame('active', $config->get('status')); // unchanged
     }
+
+    public function test_report_is_fail_open_on_network_error(): void
+    {
+        Http::fake(['*/api/v1/agent/report' => fn () => throw new \Illuminate\Http\Client\ConnectionException('down')]);
+
+        $config = app(AgentConfig::class);
+        $config->set('central_url', 'https://central.test');
+        $config->set('token', 'TKN');
+
+        $result = app(AgentClient::class)->report(
+            now()->startOfDay(), now()->endOfDay(), 100.50, 3, 'USD'
+        );
+
+        $this->assertFalse($result); // must not throw; must return false
+    }
 }
