@@ -646,6 +646,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class AgentController extends Controller
@@ -700,8 +701,14 @@ class AgentController extends Controller
             return response()->json(['accepted' => false] + $this->statusPayload($client), 200);
         }
 
+        // Normalize dates so the idempotency lookup matches the `date`-cast stored value
+        // (without this, the cast serializes differently than the raw-string lookup and the
+        // 2nd identical report misses, then violates the unique constraint → 500).
+        $periodStart = Carbon::parse($data['period_start'])->startOfDay();
+        $periodEnd = Carbon::parse($data['period_end'])->startOfDay();
+
         $client->reports()->updateOrCreate(
-            ['period_start' => $data['period_start'], 'period_end' => $data['period_end']],
+            ['period_start' => $periodStart, 'period_end' => $periodEnd],
             [
                 'gross_sales' => $data['gross_sales'],
                 'order_count' => $data['order_count'],
