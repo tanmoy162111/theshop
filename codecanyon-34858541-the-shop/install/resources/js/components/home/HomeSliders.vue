@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-5">
+  <div class="mb-5 hp-hero">
     <v-container class="pt-md-6 pb-0 px-0 px-md-3">
       <v-row
         class="gutters-7 md-gutters-10 lh-0"
@@ -275,5 +275,17 @@ export default {
   }
 }
 @media (min-width: 1264px) {
+}
+.hp-hero :deep(img) {
+  border-radius: var(--hp-radius-card);
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .35s ease-out;
+}
+.hp-hero :deep(.lh-0) { overflow: hidden; border-radius: var(--hp-radius-card); }
+.hp-hero :deep(a:hover img) { transform: scale(1.03); }
+.hp-hero :deep(.swiper-pagination-bullet-active) { background: var(--primary); }
+.hp-hero :deep(.swiper-button-next), .hp-hero :deep(.swiper-button-prev) { color: var(--primary); }
+@media (prefers-reduced-motion: reduce) {
+  .hp-hero :deep(img) { transition: none; } .hp-hero :deep(a:hover img) { transform: none; }
 }
 </style>
