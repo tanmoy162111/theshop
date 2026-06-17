@@ -95,10 +95,82 @@ class ThemeApplier
         ]);
     }
 
-    /** Filled in Task 7. Returns seeded product ids. @return int[] */
+    /** @return int[] seeded product ids (to feature on the home page) */
     private function seedDemo(ThemeApplication $app, ThemePreset $preset, int $adminShopId): array
     {
-        return [];
+        $lang = config('app.locale', 'en');
+        $catalog = $preset->catalog();
+        $catIdByName = [];
+
+        foreach ($catalog['categories'] as $parent) {
+            $parentId = $this->createCategory($app, $parent['name'], 0, 0, $lang);
+            $catIdByName[$parent['name']] = $parentId;
+
+            foreach ($parent['children'] ?? [] as $childName) {
+                $childId = $this->createCategory($app, $childName, $parentId, 1, $lang);
+                $catIdByName[$childName] = $childId;
+            }
+        }
+
+        $productIds = [];
+        foreach ($catalog['products'] as $p) {
+            $categoryId = $catIdByName[$p['category']] ?? 0;
+            $slug = Str::slug($p['name']) . '-' . Str::random(6);
+
+            $productId = DB::table('products')->insertGetId([
+                'shop_id'       => $adminShopId,
+                'name'          => $p['name'],
+                'slug'          => $slug,
+                'published'     => 1,
+                'approved'      => 1,
+                'main_category' => $categoryId,
+                'lowest_price'  => $p['price'],
+                'highest_price' => $p['price'],
+                'unit'          => 'pc',
+                'stock'         => 100,
+                'created_at'    => now(),
+                'updated_at'    => now(),
+            ]);
+
+            DB::table('product_translations')->insert([
+                'product_id' => $productId,
+                'name'       => $p['name'],
+                'unit'       => 'pc',
+                'lang'       => $lang,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            $this->recordItem($app, 'product', $productId);
+            $productIds[] = $productId;
+        }
+
+        return $productIds;
+    }
+
+    private function createCategory(ThemeApplication $app, string $name, int $parentId, int $level, string $lang): int
+    {
+        $id = DB::table('categories')->insertGetId([
+            'parent_id'   => $parentId,
+            'level'       => $level,
+            'name'        => $name,
+            'order_level' => 0,
+            'featured'    => 0,
+            'slug'        => Str::slug($name) . '-' . Str::random(6),
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ]);
+
+        DB::table('category_translations')->insert([
+            'category_id' => $id,
+            'name'        => $name,
+            'lang'        => $lang,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ]);
+
+        $this->recordItem($app, 'category', $id);
+        return $id;
     }
 
     private function rollback(?ThemeApplication $app): void
