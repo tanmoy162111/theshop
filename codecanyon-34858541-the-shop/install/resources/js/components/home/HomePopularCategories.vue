@@ -41,16 +41,17 @@
             class=""
           >
             <router-link
-              class="rounded pa-2 pa-md-4 border text-center d-block text-reset"
+              class="hp-cat-tile text-reset d-block text-center"
               :to="{ name: 'Category', params: {categorySlug: category.slug}}"
             >
-              <img
-                :src="category.banner"
-                :alt="category.name"
-                @error="imageFallback($event)"
-                class="img-fluid"
-              >
-              <div class="fs-13 opacity-80 text-truncate d-none d-md-block mt-3">{{ category.name }}</div>
+              <div class="hp-cat-img">
+                <img
+                  :src="category.banner"
+                  :alt="category.name"
+                  @error="imageFallback($event)"
+                >
+              </div>
+              <div class="hp-cat-name d-none d-md-block">{{ category.name }}</div>
             </router-link>
           </swiper-slide>
         </swiper>
@@ -122,5 +123,19 @@ h2 {
   h2 {
     font-size: 24px;
   }
+}
+.hp-cat-tile {
+  border-radius: var(--hp-radius-card); background: var(--hp-surface-muted);
+  padding: 12px; transition: transform .2s ease-out, box-shadow .2s ease-out;
+}
+.hp-cat-tile:hover { transform: translateY(-3px); box-shadow: var(--hp-shadow-md); }
+.hp-cat-img { aspect-ratio: 1/1; border-radius: 10px; overflow: hidden; background: #fff; }
+.hp-cat-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease-out; }
+.hp-cat-tile:hover .hp-cat-img img { transform: scale(1.06); }
+.hp-cat-name { margin-top: 10px; font-size: 13px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (prefers-reduced-motion: reduce) {
+  .hp-cat-tile, .hp-cat-img img { transition: none; }
+  .hp-cat-tile:hover { transform: none; } .hp-cat-tile:hover .hp-cat-img img { transform: none; }
 }
 </style>
