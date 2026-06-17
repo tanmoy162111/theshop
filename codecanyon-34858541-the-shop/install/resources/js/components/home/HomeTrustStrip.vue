@@ -17,10 +17,10 @@ export default {
   computed: {
     items() {
       return [
-        { icon: "las la-shipping-fast", title: this.t("trust_free_delivery", "Free Delivery"), sub: this.t("trust_free_delivery_sub", "On qualifying orders") },
-        { icon: "las la-undo-alt", title: this.t("trust_easy_returns", "Easy Returns"), sub: this.t("trust_easy_returns_sub", "Hassle-free refunds") },
+        { icon: "las la-shipping-fast", title: this.t("trust_free_delivery", "Free Delivery"), sub: this.t("trust_free_delivery_sub", "On orders over $50") },
+        { icon: "las la-undo-alt", title: this.t("trust_easy_returns", "Easy Returns"), sub: this.t("trust_easy_returns_sub", "7-day money back") },
         { icon: "las la-lock", title: this.t("trust_secure_payment", "Secure Payments"), sub: this.t("trust_secure_payment_sub", "100% protected") },
-        { icon: "las la-headset", title: this.t("trust_support", "Support 24/7"), sub: this.t("trust_support_sub", "We're here to help") },
+        { icon: "las la-star", title: this.t("trust_trusted_store", "Trusted Store"), sub: this.t("trust_trusted_store_sub", "4.8 / 5 rating") },
       ];
     },
   },

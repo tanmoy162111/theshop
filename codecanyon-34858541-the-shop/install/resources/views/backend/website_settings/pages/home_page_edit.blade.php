@@ -22,10 +22,21 @@
 							<button type="submit" class="btn btn-primary">{{ translate('Save') }}</button>
 						</div>
 						<div class="card-body">
+							<input type="hidden" name="types[]" value="home_hero_eyebrow">
 							<input type="hidden" name="types[]" value="home_hero_headline">
 							<input type="hidden" name="types[]" value="home_hero_subtext">
 							<input type="hidden" name="types[]" value="home_hero_cta_label">
 							<input type="hidden" name="types[]" value="home_hero_cta_link">
+							<input type="hidden" name="types[]" value="home_hero_cta2_label">
+							<input type="hidden" name="types[]" value="home_hero_cta2_link">
+							<input type="hidden" name="types[]" value="home_hero_promo1_title">
+							<input type="hidden" name="types[]" value="home_hero_promo1_link">
+							<input type="hidden" name="types[]" value="home_hero_promo2_title">
+							<input type="hidden" name="types[]" value="home_hero_promo2_link">
+							<div class="form-group">
+								<label>{{ translate('Eyebrow (small label above headline)') }}</label>
+								<input type="text" name="home_hero_eyebrow" value="{{ get_setting('home_hero_eyebrow') }}" class="form-control" placeholder="{{ translate('e.g. Mid-Season Sale') }}">
+							</div>
 							<div class="form-group">
 								<label>{{ translate('Headline') }}</label>
 								<input type="text" name="home_hero_headline" value="{{ get_setting('home_hero_headline') }}" class="form-control" placeholder="{{ translate('e.g. Everyday essentials, delivered') }}">
@@ -36,15 +47,48 @@
 							</div>
 							<div class="row">
 								<div class="col-md-6 form-group">
-									<label>{{ translate('Button Label') }}</label>
+									<label>{{ translate('Primary Button Label') }}</label>
 									<input type="text" name="home_hero_cta_label" value="{{ get_setting('home_hero_cta_label') }}" class="form-control" placeholder="{{ translate('e.g. Shop the sale') }}">
 								</div>
 								<div class="col-md-6 form-group">
-									<label>{{ translate('Button Link') }}</label>
-									<input type="text" name="home_hero_cta_link" value="{{ get_setting('home_hero_cta_link') }}" class="form-control" placeholder="/products">
+									<label>{{ translate('Primary Button Link') }}</label>
+									<input type="text" name="home_hero_cta_link" value="{{ get_setting('home_hero_cta_link') }}" class="form-control" placeholder="/all-offers">
 								</div>
 							</div>
-							<small class="text-muted">{{ translate('Leave Headline empty to show the hero images without any text overlay.') }}</small>
+							<div class="row">
+								<div class="col-md-6 form-group">
+									<label>{{ translate('Secondary Button Label') }}</label>
+									<input type="text" name="home_hero_cta2_label" value="{{ get_setting('home_hero_cta2_label') }}" class="form-control" placeholder="{{ translate('e.g. Browse all') }}">
+								</div>
+								<div class="col-md-6 form-group">
+									<label>{{ translate('Secondary Button Link') }}</label>
+									<input type="text" name="home_hero_cta2_link" value="{{ get_setting('home_hero_cta2_link') }}" class="form-control" placeholder="/all-categories">
+								</div>
+							</div>
+							<hr>
+							<p class="mb-2 fw-700">{{ translate('Side Promo Cards (right of hero)') }}</p>
+							<div class="row">
+								<div class="col-md-6 form-group">
+									<label>{{ translate('Promo 1 Title') }}</label>
+									<input type="text" name="home_hero_promo1_title" value="{{ get_setting('home_hero_promo1_title') }}" class="form-control" placeholder="{{ translate('e.g. New Arrivals') }}">
+								</div>
+								<div class="col-md-6 form-group">
+									<label>{{ translate('Promo 1 Link') }}</label>
+									<input type="text" name="home_hero_promo1_link" value="{{ get_setting('home_hero_promo1_link') }}" class="form-control" placeholder="/search">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6 form-group">
+									<label>{{ translate('Promo 2 Title') }}</label>
+									<input type="text" name="home_hero_promo2_title" value="{{ get_setting('home_hero_promo2_title') }}" class="form-control" placeholder="{{ translate('e.g. Top Brands · 25% off') }}">
+								</div>
+								<div class="col-md-6 form-group">
+									<label>{{ translate('Promo 2 Link') }}</label>
+									<input type="text" name="home_hero_promo2_link" value="{{ get_setting('home_hero_promo2_link') }}" class="form-control" placeholder="/all-brands">
+								</div>
+							</div>
+							<small class="text-muted d-block">{{ translate('Promo card images use your 2nd & 3rd hero slider images; if none are set, a themed gradient is shown.') }}</small>
+							<small class="text-muted">{{ translate('All fields are optional — sensible defaults are shown when left blank.') }}</small>
 						</div>
 					</div>
 				</form>

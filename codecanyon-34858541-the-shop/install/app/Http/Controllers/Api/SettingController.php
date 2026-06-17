@@ -23,10 +23,17 @@ class SettingController extends Controller
                 $data = Cache::remember('sliders', 86400, function () {
                     return [
                         'hero' => [
-                            'headline'  => get_setting('home_hero_headline'),
-                            'subtext'   => get_setting('home_hero_subtext'),
-                            'cta_label' => get_setting('home_hero_cta_label'),
-                            'cta_link'  => get_setting('home_hero_cta_link'),
+                            'headline'     => get_setting('home_hero_headline'),
+                            'subtext'      => get_setting('home_hero_subtext'),
+                            'eyebrow'      => get_setting('home_hero_eyebrow'),
+                            'cta_label'    => get_setting('home_hero_cta_label'),
+                            'cta_link'     => get_setting('home_hero_cta_link'),
+                            'cta2_label'   => get_setting('home_hero_cta2_label'),
+                            'cta2_link'    => get_setting('home_hero_cta2_link'),
+                            'promo1_title' => get_setting('home_hero_promo1_title'),
+                            'promo1_link'  => get_setting('home_hero_promo1_link'),
+                            'promo2_title' => get_setting('home_hero_promo2_title'),
+                            'promo2_link'  => get_setting('home_hero_promo2_link'),
                         ],
                         'one' => get_setting('home_slider_1_images')
                             ? banner_array_generate(get_setting('home_slider_1_images'), get_setting('home_slider_1_links'))
