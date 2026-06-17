@@ -2,6 +2,7 @@
 
 use App\Addons\MultiVendor\Http\Controllers\MultiVendorController;
 use App\Http\Controllers\Admin\AgentController;
+use App\Http\Controllers\Admin\ThemeController;
 use App\Http\Controllers\AddonController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AizUploadController;
@@ -355,6 +356,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('agent', [AgentController::class, 'settings'])->name('agent.settings');
     Route::post('agent/register', [AgentController::class, 'register'])->name('agent.register');
     Route::post('agent/sync', [AgentController::class, 'sync'])->name('agent.sync');
+    Route::get('theme', [ThemeController::class, 'index'])->name('theme.index');
+    Route::post('theme/apply', [ThemeController::class, 'apply'])->name('theme.apply');
+    Route::post('theme/reset', [ThemeController::class, 'reset'])->name('theme.reset');
 });
 
 //Authorize-Net-Payment
