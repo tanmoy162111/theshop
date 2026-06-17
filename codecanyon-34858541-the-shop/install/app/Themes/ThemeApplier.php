@@ -101,9 +101,44 @@ class ThemeApplier
         return [];
     }
 
-    /** Filled in Task 6. */
     private function rollback(?ThemeApplication $app): void
     {
-        // no-op until Task 6
+        if (! $app) {
+            return;
+        }
+
+        foreach ($app->items()->get() as $item) {
+            switch ($item->kind) {
+                case 'setting':
+                    if ($item->prior_value === null) {
+                        DB::table('settings')->where('type', $item->setting_type)->delete();
+                    } else {
+                        DB::table('settings')->where('type', $item->setting_type)
+                            ->update(['value' => $item->prior_value, 'updated_at' => now()]);
+                    }
+                    break;
+
+                case 'upload':
+                    $upload = DB::table('uploads')->find($item->ref_id);
+                    if ($upload && $upload->file_name) {
+                        Storage::disk('public')->delete($upload->file_name);
+                    }
+                    DB::table('uploads')->where('id', $item->ref_id)->update(['deleted_at' => now()]);
+                    break;
+
+                case 'category':
+                    DB::table('categories')->where('id', $item->ref_id)->update(['deleted_at' => now()]);
+                    DB::table('category_translations')->where('category_id', $item->ref_id)->delete();
+                    break;
+
+                case 'product':
+                    DB::table('products')->where('id', $item->ref_id)->update(['deleted_at' => now()]);
+                    DB::table('product_translations')->where('product_id', $item->ref_id)->update(['deleted_at' => now()]);
+                    break;
+            }
+        }
+
+        $app->items()->delete();
+        $app->delete();
     }
 }
