@@ -1,49 +1,29 @@
-var staticCacheName = "the-shop-pwa-" + new Date().getTime();
-var filesToCache = [
-    '/public/web-assets/img/icons/icon-72x72.png',
-    '/public/web-assets/img/icons/icon-96x96.png',
-    '/public/web-assets/img/icons/icon-128x128.png',
-    '/public/web-assets/img/icons/icon-144x144.png',
-    '/public/web-assets/img/icons/icon-152x152.png',
-    '/public/web-assets/img/icons/icon-192x192.png',
-    '/public/web-assets/img/icons/icon-384x384.png',
-    '/public/web-assets/img/icons/icon-512x512.png',
-];
+// Self-destructing service worker.
+//
+// The previous PWA worker served a stale cached app shell (it survived hard
+// reloads, incognito, and cache-busting query strings). This version removes
+// itself cleanly: on activation it deletes every cache, unregisters the worker,
+// and reloads any open tabs so they fetch fresh from the network. After it runs
+// once, the site has no service worker and always serves the latest build.
 
-// Cache on install
-self.addEventListener("install", event => {
-    this.skipWaiting();
-    event.waitUntil(
-        caches.open(staticCacheName)
-            .then(cache => {
-                return cache.addAll(filesToCache);
-            })
-    )
+self.addEventListener('install', () => {
+    self.skipWaiting();
 });
 
-// Clear cache on activate
-self.addEventListener('activate', event => {
-    event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames
-                    .filter(cacheName => (cacheName.startsWith("the-shop-pwa-")))
-                    .filter(cacheName => (cacheName !== staticCacheName))
-                    .map(cacheName => caches.delete(cacheName))
-            );
-        })
-    );
+self.addEventListener('activate', (event) => {
+    event.waitUntil((async () => {
+        // 1. Delete every cache this origin has.
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map((name) => caches.delete(name)));
+
+        // 2. Unregister this service worker. (No forced client reload here: the
+        //    page re-registers on load, so an auto-reload would loop. The user
+        //    reloads once more by hand and then gets fresh network content.)
+        await self.registration.unregister();
+    })());
 });
 
-// Serve from Cache
-self.addEventListener("fetch", event => {
-    event.respondWith(
-        caches.match(event.request)
-            .then(response => {
-                return response || fetch(event.request);
-            })
-            .catch(() => {
-                return caches.match('offline');
-            })
-    )
+// While winding down, never serve from cache — always hit the network.
+self.addEventListener('fetch', (event) => {
+    event.respondWith(fetch(event.request));
 });

@@ -31,16 +31,24 @@
 <meta name="msapplication-TileImage" content="{{ uploaded_asset(get_setting('site_icon')) }}">
 
 <script type="text/javascript">
-    // Initialize the service worker
+    // Service worker intentionally NOT registered.
+    //
+    // The old PWA worker cached a stale app shell that survived hard reloads and
+    // incognito. Instead of registering it, proactively remove any worker a
+    // visitor already has and clear its caches, so everyone gets the latest
+    // build. (To re-enable PWA later, ship a worker with a proper update flow.)
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/serviceworker.js', {
-            scope: '/'
-        }).then(function (registration) {
-            // Registration was successful
-            // console.log('Laravel PWA: ServiceWorker registration successful with scope: ', registration.scope);
-        }, function (err) {
-            // registration failed :(
-            console.log('The Shop PWA: ServiceWorker registration failed: ', err);
+        navigator.serviceWorker.getRegistrations().then(function (registrations) {
+            registrations.forEach(function (registration) {
+                registration.unregister();
+            });
         });
+        if (window.caches && caches.keys) {
+            caches.keys().then(function (keys) {
+                keys.forEach(function (key) {
+                    caches.delete(key);
+                });
+            });
+        }
     }
 </script>
