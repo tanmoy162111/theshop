@@ -69,6 +69,17 @@
               >{{ productDetails.name }}</router-link>
             </h5>
             <div
+              v-if="boxStyle == 'one' && productDetails.reviews_count > 0"
+              class="hp-stars d-flex align-center mb-2"
+            >
+              <i
+                v-for="n in 5"
+                :key="n"
+                :class="n <= Math.round(productDetails.rating) ? 'las la-star' : 'la la-star-o'"
+              ></i>
+              <span class="hp-stars__count">({{ productDetails.reviews_count }})</span>
+            </div>
+            <div
               v-if="generalSettings.club_point == 1 && boxStyle != 'two' &&  boxStyle != 'four'"
               :class="[ boxStyle == 'two' || boxStyle == 'four' ? 'd-flex flex-row align-center max-w-80px club-badge rounded-sm mb-2' : 'd-flex flex-row align-center max-w-80px club-badge rounded-sm' ]"
             >
@@ -137,7 +148,7 @@
             </div>
             <div
               class="d-flex align-center"
-              v-if="boxStyle != 'two'"
+              v-if="boxStyle != 'two' && boxStyle != 'one'"
             >
               <div :class="[ boxStyle == 'three' || boxStyle == 'four' ? 'me-3' : 'flex-grow-1 me-1' ]">
                 <template v-if="productDetails.stock">
@@ -211,6 +222,18 @@
 
                 </template>
               </div>
+            </div>
+            <div v-if="boxStyle == 'one'" class="hp-buy-row">
+              <button
+                v-if="productDetails.stock"
+                type="button"
+                class="hp-buy-btn"
+                @click="showAddToCartDialog({status:true,slug:productDetails.slug})"
+              >
+                <i class="las la-shopping-cart fs-18 me-1"></i>
+                <span>{{ $t('add_to_cart') && $t('add_to_cart') !== 'add_to_cart' ? $t('add_to_cart') : 'Add to cart' }}</span>
+              </button>
+              <span v-else class="hp-buy-btn hp-buy-btn--disabled">{{ $t('out_of_stock') }}</span>
             </div>
           </div>
         </v-col>
@@ -302,5 +325,22 @@ export default {
   .product-box-one .rounded.border, .product-box-one img.h-180px { transition: none; }
   .product-box-one .rounded.border:hover { transform: none; }
   .product-box-one .rounded.border:hover img.h-180px { transform: none; }
+}
+.product-box-one .hp-stars { gap: 1px; color: var(--primary); font-size: 13px; }
+.product-box-one .hp-stars .la-star-o { color: color-mix(in srgb, var(--primary) 35%, #cfd4dc); }
+.product-box-one .hp-stars__count { color: #9097a1; font-size: 12px; margin-left: 6px; }
+.product-box-one .hp-buy-row { margin-top: 6px; }
+.product-box-one .hp-buy-btn {
+  width: 100%; display: inline-flex; align-items: center; justify-content: center;
+  border: 0; cursor: pointer;
+  background: var(--hp-surface-muted); color: var(--primary);
+  font-weight: 700; font-size: 14px; padding: 10px 12px; border-radius: 10px;
+  transition: background .15s ease-out, color .15s ease-out;
+}
+.product-box-one .rounded.border:hover .hp-buy-btn { background: var(--primary); color: #fff; }
+.product-box-one .hp-buy-btn--disabled { background: var(--hp-surface-muted); color: #9097a1; cursor: default; }
+.product-box-one .rounded.border:hover .hp-buy-btn--disabled { background: var(--hp-surface-muted); color: #9097a1; }
+@media (prefers-reduced-motion: reduce) {
+  .product-box-one .hp-buy-btn { transition: none; }
 }
 </style>
