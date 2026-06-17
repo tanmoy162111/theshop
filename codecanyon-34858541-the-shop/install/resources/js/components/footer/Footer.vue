@@ -1,12 +1,6 @@
 <template>
   <footer class="bg-grey-darken-4 pt-8 text-white pb-14 pb-md-10 pb-lg-0">
     <v-container class="main-footer">
-      <div class="border-bottom pb-7 border-gray-800 mb-6">
-        <img
-          :src="data.footer_logo"
-          class="mw-100"
-        />
-      </div>
       <v-row>
         <v-col
           class=""
