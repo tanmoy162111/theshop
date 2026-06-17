@@ -19,7 +19,9 @@
     <HomeShopBannerSectionOne v-if="is_addon_activated('multi_vendor')" />
 
     <!-- product section 2 -->
-    <HomeProductSectionTwo />
+    <div class="hp-surface-muted hp-section-pad">
+      <HomeProductSectionTwo />
+    </div>
 
     <!-- home banner 2 -->
     <HomeBannerSectiontwo />
@@ -43,7 +45,9 @@
     <HomeShopSectionFour v-if="is_addon_activated('multi_vendor')" />
 
     <!-- product section 4 -->
-    <HomeProductSectionFour />
+    <div class="hp-surface-muted hp-section-pad">
+      <HomeProductSectionFour />
+    </div>
 
     <!-- shop section 5 -->
     <HomeShopSectionFive v-if="is_addon_activated('multi_vendor')" />
@@ -60,7 +64,7 @@
     <!-- product section 6 -->
     <HomeProductSectionSix />
 
-    <div class="py-8 bg-grey-lighten-4 mt-8">
+    <div class="hp-surface-muted hp-section-pad mt-8">
       <v-container>
         <HomeAboutText />
         <HomeAllCategories />
