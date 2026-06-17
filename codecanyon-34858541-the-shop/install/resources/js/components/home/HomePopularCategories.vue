@@ -131,6 +131,7 @@ h2 {
   transition: transform .2s ease-out, box-shadow .2s ease-out, border-color .2s ease-out;
 }
 .hp-cat-tile:hover { transform: translateY(-4px); box-shadow: var(--hp-shadow-md); border-color: var(--primary); }
+.hp-cat-tile:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
 .hp-cat-img { aspect-ratio: 1/1; border-radius: 10px; overflow: hidden; background: #fff; }
 .hp-cat-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease-out; }
 .hp-cat-tile:hover .hp-cat-img img { transform: scale(1.06); }

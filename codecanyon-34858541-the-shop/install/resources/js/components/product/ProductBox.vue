@@ -338,6 +338,7 @@ export default {
   transition: background .15s ease-out, color .15s ease-out;
 }
 .product-box-one .rounded.border:hover .hp-buy-btn { background: var(--primary); color: #fff; }
+.product-box-one .hp-buy-btn:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
 .product-box-one .hp-buy-btn--disabled { background: var(--hp-surface-muted); color: #9097a1; cursor: default; }
 .product-box-one .rounded.border:hover .hp-buy-btn--disabled { background: var(--hp-surface-muted); color: #9097a1; }
 @media (prefers-reduced-motion: reduce) {

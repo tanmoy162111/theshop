@@ -325,6 +325,7 @@ export default {
   transition: transform .15s ease-out, background .15s ease-out;
 }
 .hp-hero-cta:hover { background: var(--hov-primary); transform: translateY(-2px); }
+.hp-hero-cta:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 .v-locale--is-rtl .hp-hero-overlay {
   background: linear-gradient(270deg, rgba(8,11,15,.82) 0%, rgba(8,11,15,.45) 45%, rgba(8,11,15,0) 78%);
   text-align: right;
