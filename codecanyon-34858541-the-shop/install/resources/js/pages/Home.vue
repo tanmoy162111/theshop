@@ -3,6 +3,9 @@
     <!-- slider area -->
     <HomeSliders />
 
+    <!-- trust strip -->
+    <HomeTrustStrip />
+
     <!-- popular categories -->
     <HomePopularCategories />
 
@@ -76,6 +79,7 @@
 <script>
 import HomePopularCategories from "../components/home/HomePopularCategories.vue";
 import HomeSliders from "../components/home/HomeSliders.vue";
+import HomeTrustStrip from "../components/home/HomeTrustStrip.vue";
 
 import HomeProductSectionFive from "../components/home/HomeProductSectionFive.vue";
 import HomeProductSectionFour from "../components/home/HomeProductSectionFour.vue";
@@ -104,6 +108,7 @@ import HomeShopSectionTwo from "../components/home/HomeShopSectionTwo.vue";
 export default {
   components: {
     HomeSliders,
+    HomeTrustStrip,
     HomePopularCategories,
     HomeProductSectionOne,
     HomeProductSectionTwo,
