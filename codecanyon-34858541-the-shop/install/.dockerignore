@@ -1,0 +1,17 @@
+# Keep the build context small and avoid root-owned runtime dirs.
+.git
+node_modules
+vendor
+public/build
+public/uploads
+storage/framework/cache/data
+storage/framework/sessions
+storage/framework/views
+storage/framework/testing
+storage/logs
+*.log
+.env
+.env.*
+Dockerfile
+Dockerfile.render
+docker-compose.yml

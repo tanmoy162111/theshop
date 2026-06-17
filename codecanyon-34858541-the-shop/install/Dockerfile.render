@@ -1,0 +1,44 @@
+# Production image for Render (builds assets + PHP deps in-image, since
+# vendor/ and public/build/ are git-ignored). Build context = this directory.
+
+# ---- Stage 1: build front-end assets (Vite) ----
+FROM node:24-bullseye AS assets
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# ---- Stage 2: PHP runtime ----
+FROM php:8.1-cli AS app
+
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN chmod +x /usr/local/bin/install-php-extensions \
+    && install-php-extensions \
+        pdo_mysql mbstring bcmath gd zip intl gmp exif soap pcntl sockets redis \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends unzip git default-mysql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+
+# Install PHP deps first (cache-friendly). Skip scripts: package discovery runs
+# at boot once env vars are present.
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-interaction --prefer-dist --optimize-autoloader
+
+# App source + built assets from the node stage.
+COPY . .
+COPY --from=assets /app/public/build ./public/build
+
+# Recreate runtime dirs (excluded from the build context via .dockerignore).
+RUN mkdir -p storage/framework/cache/data storage/framework/sessions \
+        storage/framework/views storage/framework/testing storage/logs bootstrap/cache \
+    && composer dump-autoload --optimize --no-dev \
+    && chmod -R 775 storage bootstrap/cache \
+    && chmod +x docker/render-start.sh
+
+EXPOSE 8000
+CMD ["docker/render-start.sh"]

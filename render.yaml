@@ -1,0 +1,74 @@
+# Render Blueprint for The Shop (Laravel + Vue).
+# Render has no managed MySQL, so MySQL runs as a private service with a disk.
+# Deploy: Render Dashboard -> New -> Blueprint -> connect tanmoy162111/theshop.
+services:
+  # ---- Web service (the app) ----
+  - type: web
+    name: theshop
+    runtime: docker
+    plan: starter            # 512MB; bump if builds OOM
+    rootDir: codecanyon-34858541-the-shop/install
+    dockerfilePath: Dockerfile.render
+    dockerContext: .
+    healthCheckPath: /
+    autoDeploy: true
+    disk:
+      name: uploads          # persist user uploads across deploys
+      mountPath: /app/public/uploads
+      sizeGB: 1
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        sync: false          # set to `base64:...` (see runbook) before first deploy
+      - key: APP_URL
+        sync: false          # set to the Render URL after the service is created
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: SESSION_DRIVER
+        value: file
+      - key: CACHE_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        fromService:
+          name: theshop-mysql
+          type: pserv
+          property: host
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_DATABASE
+        value: theshop
+      - key: DB_USERNAME
+        value: theshop
+      - key: DB_PASSWORD
+        fromService:
+          name: theshop-mysql
+          type: pserv
+          envVarKey: MYSQL_PASSWORD
+
+  # ---- MySQL (private service) ----
+  - type: pserv
+    name: theshop-mysql
+    runtime: image
+    plan: starter
+    image:
+      url: docker.io/library/mysql:8.0
+    disk:
+      name: mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 1
+    envVars:
+      - key: MYSQL_DATABASE
+        value: theshop
+      - key: MYSQL_USER
+        value: theshop
+      - key: MYSQL_PASSWORD
+        generateValue: true
+      - key: MYSQL_ROOT_PASSWORD
+        generateValue: true
